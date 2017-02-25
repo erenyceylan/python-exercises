@@ -32,7 +32,7 @@ def change_return(m, c):
 	
 
 
-money = input("Type given money: ")
-cost= input("Type total cost: ")
+money = float(input("Type given money: "))
+cost= float(input("Type total cost: "))
 
 print(change_return(money,cost))
