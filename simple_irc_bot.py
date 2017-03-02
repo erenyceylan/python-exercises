@@ -23,15 +23,19 @@ def sendmsg(msg, target=ch): # sends messages to the target.
   ircsock.send(bytes("PRIVMSG "+ target +" :"+ msg +"\n", "UTF-8"))
 
 def cat_link_finder(cat_type):
+    
     param = {"site" : "imghp", "tbm" : "isch", "q" : cat_type}
     r = requests.get("https://www.google.com/search", params=param)
-    fleft = r.text.find("www")
-    fright = r.text.find("&", fleft)
+    
+    fleft = r.text.index("www")
+    fright = r.text.index("&", fleft)
     url = r.text[fleft:fright]
-    while url.find("google") != -1 or url.find("youtube") != -1:
-        fleft = r.text.find("www", fright)
-        fright = r.text.find("&", fleft)
+    
+    while "google" in url or "youtube" in url:
+        fleft = r.text.index("www", fright)
+        fright = r.text.index("&", fleft)
         url = r.text[fleft:fright]
+    
     return url
 
 def main():
