@@ -1,4 +1,5 @@
 import socket
+import requests
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = "chat.freenode.org"
@@ -21,6 +22,18 @@ def ping(): # respond to server Pings.
 def sendmsg(msg, target=ch): # sends messages to the target.
   ircsock.send(bytes("PRIVMSG "+ target +" :"+ msg +"\n", "UTF-8"))
 
+def cat_link_finder(cat_type):
+    param = {"site" : "imghp", "tbm" : "isch", "q" : cat_type}
+    r = requests.get("https://www.google.com/search", params=param)
+    fleft = r.text.find("www")
+    fright = r.text.find("&", fleft)
+    url = r.text[fleft:fright]
+    while url.find("google") != -1 or url.find("youtube") != -1:
+        fleft = r.text.find("www", fright)
+        fright = r.text.find("&", fleft)
+        url = r.text[fleft:fright]
+    return url
+
 def main():
   joinchan(ch)
   while True:
@@ -38,6 +51,10 @@ def main():
             sendmsg("Hi to you too!")
         elif message.rstrip() == "!who are you":
             sendmsg("I am a bot made by horusr for learning purposes")
+        elif "!cat" in message.rstrip():
+            arg = message.rstrip()[1:].replace(" ", "+")
+            link = cat_link_finder(arg)
+            sendmsg(link)
     elif ircmsg.find("PING :") != -1:
         ping()
 
